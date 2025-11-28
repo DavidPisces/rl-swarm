@@ -247,28 +247,11 @@ fi
 echo_green ">> Done!"
 
 
-echo -en $GREEN_TEXT
-read -p ">> Would you like to push models you train in the RL swarm to the Hugging Face Hub? [y/N] " yn
-echo -en $RESET_TEXT
-yn=${yn:-N} # Default to "N" if the user presses Enter
-case $yn in
-    [Yy]*) read -p "Enter your Hugging Face access token: " HUGGINGFACE_ACCESS_TOKEN ;;
-    [Nn]*) HUGGINGFACE_ACCESS_TOKEN="None" ;;
-    *) echo ">>> No answer was given, so NO models will be pushed to Hugging Face Hub" && HUGGINGFACE_ACCESS_TOKEN="None" ;;
-esac
+# skip useless interaction in docker
+HUGGINGFACE_ACCESS_TOKEN="None"
+echo_green ">> Using default model from config"
+echo_blue "[Reiraku Patch] Skipped interaction. Starting..."
 
-
-echo -en $GREEN_TEXT
-read -p ">> Enter the name of the model you want to use in huggingface repo/name format, or press [Enter] to use the default model. " MODEL_NAME
-echo -en $RESET_TEXT
-
-# Only export MODEL_NAME if user provided a non-empty value
-if [ -n "$MODEL_NAME" ]; then
-    export MODEL_NAME
-    echo_green ">> Using model: $MODEL_NAME"
-else
-    echo_green ">> Using default model from config"
-fi
 #logout to prevent weird env issues, if it fails unset and try again
 if ! hf auth logout > /dev/null 2>&1; then
     unset HF_TOKEN
