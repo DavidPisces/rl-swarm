@@ -4,6 +4,10 @@ set -euo pipefail
 
 # General arguments
 ROOT=$PWD
+echo "[GenSyn Patch] Setting up proxy..."
+export http_proxy=http://192.168.1.155:7897
+export https_proxy=http://192.168.1.155:7897
+export all_proxy=socks5://192.168.1.155:7897
 
 export IDENTITY_PATH
 export GENSYN_RESET_CONFIG
