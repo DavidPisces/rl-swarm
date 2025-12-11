@@ -33,6 +33,10 @@ services:
       dockerfile: containerfiles/swarm-node/swarm.containerfile
       args:
         - BASE_IMAGE=ubuntu:24.04
+        # [Patch] Proxy for Clash Verge
+        - http_proxy=http://192.168.1.155:7897
+        - https_proxy=http://192.168.1.155:7897
+        - all_proxy=socks5://192.168.1.155:7897
     depends_on:
       - ollama
     ports:
