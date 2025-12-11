@@ -9,25 +9,25 @@ services:
     depends_on:
       - otel-collector
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/healthz"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/api/healthz" ]
       interval: 30s
       retries: 3
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.120.0
     ports:
-      - "4317:4317"  # OTLP gRPC
-      - "4318:4318"  # OTLP HTTP
-      - "55679:55679"  # Prometheus metrics (optional)
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+      - "55679:55679" # Prometheus metrics (optional)
     environment:
       - OTEL_LOG_LEVEL=DEBUG
     healthcheck:
-      test: ["CMD", "grpc_health_probe", "-addr=localhost:4317"]
+      test: [ "CMD", "grpc_health_probe", "-addr=localhost:4317" ]
       interval: 5s
       retries: 5
 
   swarm-cpu:
-    profiles: ["swarm"]
+    profiles: [ "swarm" ]
     build:
       context: .
       dockerfile: containerfiles/swarm-node/swarm.containerfile
@@ -46,6 +46,10 @@ services:
       - HF_TOKEN=${HF_TOKEN}
       - GENSYN_RESET_CONFIG=${GENSYN_RESET_CONFIG}
       - OLLAMA_HOST=http://ollama:11434
+      # [Patch] Proxy for Clash Verge
+      - http_proxy=http://192.168.1.155:7897
+      - https_proxy=http://192.168.1.155:7897
+      - all_proxy=socks5://192.168.1.155:7897
 
   # Requires the NVIDIA Drivers version >=525.60.13 to be installed, as well
   # as the nvidia-container-toolkit.
@@ -53,7 +57,8 @@ services:
   # https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/
   # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
   swarm-gpu:
-    profiles: ["swarm"]
+    profiles: [ "swarm" ]
+    restart: always
     build:
       context: .
       dockerfile: containerfiles/swarm-node/swarm.containerfile
@@ -78,7 +83,7 @@ services:
           devices:
             - driver: nvidia
               count: all
-              capabilities: [gpu]
+              capabilities: [ gpu ]
   ollama:
     image: ollama/ollama:0.11.10
     ports:
