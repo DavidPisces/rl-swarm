@@ -95,7 +95,8 @@ cat << "EOF"
     From Gensyn
 
 EOF
-
+ip=$(curl -s ifconfig.me)
+echo "[IP info] Current IP address is: $ip" 
 # Create logs directory if it doesn't exist
 mkdir -p "$ROOT/logs"
 
